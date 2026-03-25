@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADRIANFLIX</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #050505;
+      color: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body {
+      background:
+        radial-gradient(circle at top, rgba(255,0,0,.18), transparent 35%),
+        radial-gradient(circle at bottom, rgba(255,0,0,.10), transparent 30%),
+        linear-gradient(180deg, #090909 0%, #050505 100%);
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 20px;
+      border: 1px solid #242424;
+      border-radius: 24px;
+      background: rgba(15,15,15,.95);
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+      margin-bottom: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .brand-logo {
+      width: 86px;
+      height: 86px;
+      object-fit: contain;
+      border-radius: 22px;
+      background: #000;
+      border: 1px solid #2f2f2f;
+      padding: 8px;
+      box-shadow: 0 0 22px rgba(255,0,0,.15);
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 42px;
+      color: #ff2020;
+      letter-spacing: 1px;
+      text-shadow: 0 0 16px rgba(255,0,0,.25);
+    }
+    .brand p {
+      margin: 6px 0 0;
+      color: #b5b5b5;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 1px solid #333;
+      background: #111;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-size: 14px;
+    }
+    button:hover { background: #1a1a1a; }
+    button.active {
+      background: #c40000;
+      border-color: #ff2e2e;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: rgba(15,15,15,.96);
+      border: 1px solid #242424;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.28);
+    }
+    .panel-inner { padding: 18px; }
+    .panel-title {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+    .search-box {
+      width: 100%;
+      margin-bottom: 14px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #313131;
+      background: #090909;
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .status {
+      font-size: 13px;
+      color: #c3c3c3;
+      background: #0a0a0a;
+      border: 1px solid #272727;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .channel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: calc(100vh - 250px);
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .channel-card {
+      border: 1px solid #282828;
+      background: #101010;
+      border-radius: 20px;
+      padding: 14px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .channel-card:hover { background: #171717; }
+    .channel-card.selected {
+      border-color: #5c5c5c;
+      background: #1a1a1a;
+    }
+    .channel-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .channel-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      object-fit: contain;
+      background: #050505;
+      border: 1px solid #252525;
+      flex-shrink: 0;
+      padding: 4px;
+    }
+    .channel-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      color: #fff;
+    }
+    .channel-meta {
+      font-size: 12px;
+      color: #bdbdbd;
+      line-height: 1.5;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #333;
+      background: #0b0b0b;
+      color: #ddd;
+      font-size: 11px;
+    }
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid #262626;
+    }
+    .video-wrap video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+    }
+    .video-overlay {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.7);
+      border: 1px solid #353535;
+      z-index: 2;
+      font-size: 12px;
+    }
+    .video-overlay img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+    .empty {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9b9b9b;
+      text-align: center;
+      padding: 20px;
+    }
+    .details {
+      margin-top: 20px;
+    }
+    .details-head {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .details-head img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #050505;
+      border: 1px solid #262626;
+      padding: 6px;
+    }
+    .details-head h2 {
+      margin: 0;
+      font-size: 30px;
+    }
+    .details-head p {
+      margin: 6px 0 0;
+      color: #bcbcbc;
+      font-size: 14px;
+    }
+    .stream-list {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .stream-item {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #2a2a2a;
+      background: #0a0a0a;
+      color: #d8d8d8;
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .info-box {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid #2a2a2a;
+      background: #0a0a0a;
+      color: #bdbdbd;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .channel-list { max-height: none; }
+      .brand h1 { font-size: 34px; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: 12px; }
+      .header, .panel-inner { padding: 14px; }
+      .brand { align-items: flex-start; }
+      .brand-logo { width: 72px; height: 72px; }
+      .brand h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <img src="logo.png" alt="ADRIANFLIX" class="brand-logo">
+        <div>
+          <h1>ADRIANFLIX</h1>
+          <p>Canales de TV de Mar del Plata y Argentina</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="toggleCountryBtn" class="active">Solo Argentina</button>
+        <button id="reloadBtn">Recargar</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-inner">
+          <h2 class="panel-title">Canales ADRIANFLIX</h2>
+          <div class="search-box">
+            <input id="searchInput" type="text" placeholder="Buscar canal, categoría o palabra clave...">
+          </div>
+          <div id="categoryChips" class="chips"></div>
+          <div id="statusBox" class="status">Cargando datos desde iptv-org...</div>
+          <div id="channelList" class="channel-list"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="video-wrap">
+            <div class="video-overlay">
+              <img src="logo.png" alt="ADRIANFLIX">
+              <span>ADRIANFLIX</span>
+            </div>
+            <video id="player" controls autoplay playsinline></video>
+            <div id="videoEmpty" class="empty">Seleccioná un canal con stream disponible</div>
+          </div>
+
+          <div id="details" class="details"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const CHANNELS_URL = 'https://iptv-org.github.io/api/channels.json';
+    const STREAMS_URL = 'https://iptv-org.github.io/api/streams.json';
+    const LOGOS_URL = 'https://iptv-org.github.io/api/logos.json';
+
+    const LOCAL_KEYWORDS = [
+      'mar del plata', 'mardelplata', 'mdp', 'costa atlantica', 'buenos aires',
+      'argentina', 'canal 8', 'canal 10', 'tv', 'noticias'
+    ];
+
+    let allChannels = [];
+    let filteredChannels = [];
+    let selectedChannel = null;
+    let onlyArgentina = true;
+    let selectedCategory = 'all';
+
+    const searchInput = document.getElementById('searchInput');
+    const categoryChips = document.getElementById('categoryChips');
+    const statusBox = document.getElementById('statusBox');
+    const channelList = document.getElementById('channelList');
+    const details = document.getElementById('details');
+    const player = document.getElementById('player');
+    const videoEmpty = document.getElementById('videoEmpty');
+    const toggleCountryBtn = document.getElementById('toggleCountryBtn');
+    const reloadBtn = document.getElementById('reloadBtn');
+
+    function normalize(text) {
+      return (text || '')
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    }
+
+    function scoreChannel(channel) {
+      const haystack = normalize([
+        channel.name,
+        ...(channel.alt_names || []),
+        channel.network,
+        channel.website,
+        ...(channel.categories || []),
+        channel.city,
+        channel.subdivision,
+        channel.country
+      ].filter(Boolean).join(' '));
+
+      let score = 0;
+      if (channel.country === 'AR') score += 5;
+      if (haystack.includes('buenos aires')) score += 10;
+      if (haystack.includes('mar del plata')) score += 30;
+      for (const keyword of LOCAL_KEYWORDS) {
+        if (haystack.includes(keyword)) score += 3;
+      }
+      if ((channel.categories || []).includes('news')) score += 2;
+      if ((channel.categories || []).includes('general')) score += 2;
+      if ((channel.streams || []).length > 0) score += 5;
+      return score;
+    }
+
+    function getCategories(channels) {
+      const set = new Set();
+      channels.forEach(ch => (ch.categories || []).forEach(cat => set.add(cat)));
+      return ['all', ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+    }
+
+    async function loadData() {
+      statusBox.textContent = 'Cargando datos desde iptv-org...';
+      channelList.innerHTML = '';
+      details.innerHTML = '';
+      player.removeAttribute('src');
+      player.load();
+      videoEmpty.style.display = 'flex';
+
+      try {
+        const [channelsRes, streamsRes, logosRes] = await Promise.all([
+          fetch(CHANNELS_URL),
+          fetch(STREAMS_URL),
+          fetch(LOGOS_URL)
+        ]);
+
+        if (!channelsRes.ok || !streamsRes.ok || !logosRes.ok) {
+          throw new Error('No se pudo cargar la API de iptv-org.');
+        }
+
+        const [channelsData, streamsData, logosData] = await Promise.all([
+          channelsRes.json(),
+          streamsRes.json(),
+          logosRes.json()
+        ]);
+
+        const streamsByChannel = {};
+        for (const stream of streamsData) {
+          if (!streamsByChannel[stream.channel]) streamsByChannel[stream.channel] = [];
+          streamsByChannel[stream.channel].push(stream);
+        }
+
+        const logosByChannel = {};
+        for (const logo of logosData) {
+          if (!logosByChannel[logo.channel]) logosByChannel[logo.channel] = [];
+          logosByChannel[logo.channel].push(logo);
+        }
+
+        allChannels = channelsData
+          .map(channel => ({
+            ...channel,
+            streams: streamsByChannel[channel.id] || [],
+            logos: logosByChannel[channel.id] || [],
+            score: scoreChannel({
+              ...channel,
+              streams: streamsByChannel[channel.id] || []
+            })
+          }))
+          .filter(channel => !channel.is_nsfw)
+          .sort((a, b) => (b.score - a.score) || a.name.localeCompare(b.name));
+
+        selectedChannel = allChannels.find(ch => (ch.streams || []).length > 0) || null;
+        renderCategories();
+        applyFilters();
+      } catch (error) {
+        statusBox.textContent = error.message || 'Error cargando canales.';
+      }
+    }
+
+    function renderCategories() {
+      const base = allChannels.filter(c => !onlyArgentina || c.country === 'AR');
+      const categories = getCategories(base).slice(0, 16);
+      categoryChips.innerHTML = '';
+
+      categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.textContent = category === 'all' ? 'Todas' : category;
+        if (selectedCategory === category) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          selectedCategory = category;
+          renderCategories();
+          applyFilters();
+        });
+        categoryChips.appendChild(btn);
+      });
+    }
+
+    function applyFilters() {
+      const q = normalize(searchInput.value);
+
+      filteredChannels = allChannels.filter(channel => {
+        if (onlyArgentina && channel.country !== 'AR') return false;
+        if (selectedCategory !== 'all' && !(channel.categories || []).includes(selectedCategory)) return false;
+
+        if (!q) return channel.score > 0 || channel.country === 'AR';
+
+        const haystack = normalize([
+          channel.name,
+          ...(channel.alt_names || []),
+          channel.network,
+          channel.website,
+          ...(channel.categories || []),
+          channel.country
+        ].filter(Boolean).join(' '));
+
+        return haystack.includes(q);
+      });
+
+      if (!selectedChannel || !filteredChannels.some(c => c.id === selectedChannel.id)) {
+        selectedChannel = filteredChannels.find(ch => (ch.streams || []).length > 0) || filteredChannels[0] || null;
+      }
+
+      statusBox.textContent = filteredChannels.length + ' canales encontrados';
+      renderChannels();
+      renderSelectedChannel();
+    }
+
+    function renderChannels() {
+      channelList.innerHTML = '';
+
+      filteredChannels.slice(0, 40).forEach(channel => {
+        const card = document.createElement('div');
+        card.className = 'channel-card' + (selectedChannel && selectedChannel.id === channel.id ? ' selected' : '');
+
+        const logo = (channel.logos && channel.logos[0] && channel.logos[0].url) ? channel.logos[0].url : 'logo.png';
+        const hasStream = (channel.streams || []).length > 0;
+        const cats = (channel.categories || []).join(' • ') || 'Sin categoría';
+
+        card.innerHTML = `
+          <div class="channel-top">
+            <img class="channel-logo" src="${logo}" alt="${escapeHtml(channel.name)}" onerror="this.src='logo.png'">
+            <div>
+              <div class="channel-name">${escapeHtml(channel.name)}</div>
+              <div class="channel-meta">${escapeHtml(cats)}</div>
+              <div class="badges">
+                <span class="badge">${escapeHtml(channel.country || 'N/A')}</span>
+                ${channel.network ? `<span class="badge">${escapeHtml(channel.network)}</span>` : ''}
+                ${hasStream ? '<span class="badge">online</span>' : ''}
+                ${channel.score >= 12 ? '<span class="badge">relevante MDP</span>' : ''}
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          selectedChannel = channel;
+          renderChannels();
+          renderSelectedChannel();
+        });
+
+        channelList.appendChild(card);
+      });
+    }
+
+    function renderSelectedChannel() {
+      if (!selectedChannel) {
+        details.innerHTML = '<div class="info-box">No hay canales para mostrar.</div>';
+        player.removeAttribute('src');
+        player.load();
+        videoEmpty.style.display = 'flex';
+        return;
+      }
+
+      const currentStream = selectedChannel.streams && selectedChannel.streams[0] ? selectedChannel.streams[0].url : '';
+      const currentLogo = selectedChannel.logos && selectedChannel.logos[0] ? selectedChannel.logos[0].url : 'logo.png';
+      const cats = (selectedChannel.categories || []).join(' • ') || 'Sin categoría';
+      const website = selectedChannel.website || '';
+
+      if (currentStream) {
+        player.src = currentStream;
+        player.load();
+        videoEmpty.style.display = 'none';
+      } else {
+        player.removeAttribute('src');
+        player.load();
+        videoEmpty.style.display = 'flex';
+      }
+
+      details.innerHTML = `
+        <div class="details-head">
+          <img src="${currentLogo}" alt="${escapeHtml(selectedChannel.name)}" onerror="this.src='logo.png'">
+          <div>
+            <h2>${escapeHtml(selectedChannel.name)}</h2>
+            <p>${escapeHtml(cats)}</p>
+          </div>
+        </div>
+
+        <div class="badges">
+          <span class="badge">País: ${escapeHtml(selectedChannel.country || 'N/A')}</span>
+          ${selectedChannel.network ? `<span class="badge">Red: ${escapeHtml(selectedChannel.network)}</span>` : ''}
+          <span class="badge">Streams: ${(selectedChannel.streams || []).length}</span>
+        </div>
+
+        ${website ? `<div class="info-box">Sitio oficial: <a href="${website}" target="_blank" rel="noreferrer">${escapeHtml(website)}</a></div>` : ''}
+
+        <div class="stream-list">
+          <h3 style="margin:0 0 4px;">URLs detectadas</h3>
+          ${(selectedChannel.streams || []).slice(0, 5).map((stream, index) => `
+            <div class="stream-item"><strong>Stream ${index + 1}:</strong><br>${escapeHtml(stream.url)}</div>
+          `).join('') || '<div class="stream-item">No hay streams listados para este canal.</div>'}
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+
+    toggleCountryBtn.addEventListener('click', () => {
+      onlyArgentina = !onlyArgentina;
+      toggleCountryBtn.textContent = onlyArgentina ? 'Solo Argentina' : 'Todos los países';
+      toggleCountryBtn.classList.toggle('active', onlyArgentina);
+      selectedCategory = 'all';
+      renderCategories();
+      applyFilters();
+    });
+
+    reloadBtn.addEventListener('click', loadData);
+
+    loadData();
+  </script>
+</body>
+</html>
